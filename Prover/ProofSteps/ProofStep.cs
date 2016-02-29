@@ -8,7 +8,7 @@ namespace Prover.ProofSteps
         public int Number { get; protected set; }
         protected string StepNumber { get { return Number.ToString() + "."; } }
 
-        public ProofStep(Node expressionProven)
+        protected ProofStep(Node expressionProven)
         {
             ExpressionProven = expressionProven;
         }

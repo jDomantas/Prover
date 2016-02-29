@@ -73,7 +73,7 @@ namespace Prover.Tree
         {
             BinaryOperation other = obj as BinaryOperation;
 
-            return other != null && LHS.Equals(other.LHS) && RHS.Equals(other.RHS) && Operation == other.Operation;
+            return other != null && other._cachedHashCode == _cachedHashCode && LHS.Equals(other.LHS) && RHS.Equals(other.RHS) && Operation == other.Operation;
         }
 
         public override string ToString()

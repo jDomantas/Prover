@@ -57,7 +57,7 @@ namespace Prover.Tree
         {
             UnaryOperation other = obj as UnaryOperation;
 
-            return other != null && Inner.Equals(other.Inner) && Operation == other.Operation;
+            return other != null && other._cachedHashCode == _cachedHashCode && Inner.Equals(other.Inner) && Operation == other.Operation;
         }
 
         public override string ToString()

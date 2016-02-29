@@ -26,18 +26,22 @@ namespace Prover
 
         public static void Prove(Node expression)
         {
+            const int stepLimit = 4;
+
             Prover prover = new Prover(expression);
             int ticks = 0;
+            Stopwatch timer = Stopwatch.StartNew();
             while (!prover.IsProven(expression))
             {
                 prover.ExpandTargets();
                 ticks++;
-                if (ticks > 200)
+                if (ticks > stepLimit)
                 {
-                    Console.WriteLine("Failed to find the proof in 100 steps");
+                    Console.WriteLine($"Failed to find the proof in {stepLimit} steps");
                     return;
                 }
             }
+            Console.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
 
             prover.NodeProofs[expression].SetOrdering(1);
 
@@ -121,7 +125,11 @@ namespace Prover
 
         private void AddTarget(Node expression, Node useIn)
         {
-            if (!Targets.ContainsKey(expression))
+            if (IsProven(expression))
+            {
+                DoModusPonens(expression, useIn);
+            }
+            else if (!Targets.ContainsKey(expression))
             {
                 HashSet<Node> usages = new HashSet<Node>();
                 usages.Add(useIn);
@@ -163,6 +171,9 @@ namespace Prover
             axiomToUse.RegisterVariables(variablesInAxiom);
             int variableCount = variablesInAxiom.Count;
 
+            HashSet<char> variablesInExpression = new HashSet<char>();
+            expression.RegisterVariables(variablesInExpression);
+
             Node currentSubpart = axiomToUse;
             int steps = 0;
             while (true)
@@ -179,9 +190,24 @@ namespace Prover
                 var mapping = new Dictionary<char, Node>();
                 if (binary.RHS.Match(expression, mapping))
                 {
-                    if (mapping.Count < variableCount)
+                    if (mapping.Count == variableCount - 1)
                     {
-                        // didn't set all variables, too difficult to make guessing work for now
+                        // have to guess one variable
+                        char variable = variablesInAxiom.Where(v => !mapping.ContainsKey(v)).First();
+                        mapping.Add(variable, null);
+                        foreach (var tree in TreeGenerator.GenerateTrees(variablesInExpression))
+                        {
+                            // replace guessed variable with given tree and then do the same
+                            mapping[variable] = tree;
+
+                            var mappedAxiom = axiomToUse.Map(mapping);
+                            OnProvenFormula(mappedAxiom, new StepFromAxiom(mappedAxiom, axiomToUse));
+                            AddImplicationSteps(mappedAxiom, steps);
+                        }
+                    }
+                    else if (mapping.Count < variableCount)
+                    {
+                        // have to guess at least two variables
                         break;
                     }
                     else

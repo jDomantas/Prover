@@ -52,6 +52,7 @@
     <Compile Include="ProofSteps\StepModusPonens.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Prover.cs" />
+    <Compile Include="TreeGenerator.cs" />
     <Compile Include="Tree\BinaryOperation.cs" />
     <Compile Include="Tree\Node.cs" />
     <Compile Include="Tree\UnaryOperation.cs" />
