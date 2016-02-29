@@ -162,7 +162,7 @@ namespace Prover
         }
 
         /// <summary>
-        /// (A -> B) -> ((B -> C) -> ((A | B) -> C))
+        /// (A -> C) -> ((B -> C) -> ((A | B) -> C))
         /// </summary>
         /// <returns></returns>
         private static Node CreateAxiom33()
@@ -171,7 +171,7 @@ namespace Prover
                 new BinaryOperation(
                     new Variable('A', false),
                     BinaryOperation.OP.Implies,
-                    new Variable('B', false)),
+                    new Variable('C', false)),
                 BinaryOperation.OP.Implies,
                 new BinaryOperation(
                     new BinaryOperation(
@@ -182,7 +182,7 @@ namespace Prover
                     new BinaryOperation(
                         new BinaryOperation(
                             new Variable('A', false),
-                            BinaryOperation.OP.And,
+                            BinaryOperation.OP.Or,
                             new Variable('B', false)),
                         BinaryOperation.OP.Implies,
                         new Variable('C', false))));

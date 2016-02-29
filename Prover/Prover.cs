@@ -26,7 +26,7 @@ namespace Prover
 
         public static void Prove(Node expression)
         {
-            const int stepLimit = 4;
+            const int stepLimit = 10;
 
             Prover prover = new Prover(expression);
             int ticks = 0;
