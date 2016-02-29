@@ -139,8 +139,7 @@ namespace Prover
                 return;
 
             BinaryOperation binary = useIn as BinaryOperation;
-            if (useIn == null || binary.Operation != BinaryOperation.OP.Implies)
-                throw new ProofException($"tried to use modus ponens in: {useIn}");
+            Debug.Assert(binary != null && binary.Operation == BinaryOperation.OP.Implies, $"invalid use of modus ponens");
 
             Node fromModusPonens = binary.RHS;
             if (IsProven(fromModusPonens))
