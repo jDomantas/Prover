@@ -6,7 +6,7 @@ using System.Linq;
 using Prover.ProofSteps;
 using Prover.Tree;
 
-namespace Prover
+namespace Prover.Hilbert
 {
     class HilbertProver
     {

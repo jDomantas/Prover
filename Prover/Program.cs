@@ -49,7 +49,7 @@ namespace Prover
                 return;
             }
 
-            HilbertProver.Prove(new Sequence(expression), Console.Out);
+            Hilbert.HilbertProver.Prove(new Sequence(expression), Console.Out);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Prover.Tree;
 
-namespace Prover
+namespace Prover.Hilbert
 {
     class TreeGenerator
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Prover.Tree;
 
-namespace Prover
+namespace Prover.Hilbert
 {
     class Axioms
     {
