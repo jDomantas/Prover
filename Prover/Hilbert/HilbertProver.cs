@@ -10,9 +10,6 @@ namespace Prover.Hilbert
 {
     class HilbertProver
     {
-        // that symbol (tee, turnstile, yields, whatever it is called): \u22A2
-        // but it doesn't get printed to the console properly
-        
         public static void Prove(Sequence sequence, TextWriter output)
         {
             if (sequence.Premises.Count() != 0 || sequence.Outcomes.Count() != 1)

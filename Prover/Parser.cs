@@ -20,7 +20,7 @@ namespace Prover
          * The whole parser input must be a valid instance of Node
          */
 
-        private enum TokenType { OpenParenth, CloseParenth, Variable, And, Or, Implies, Not, EndOfInput }
+        private enum TokenType { OpenParenth, CloseParenth, Variable, And, Or, Implies, Not, EndOfInput, Comma, Yields }
         
         [Serializable]
         public class ParseException : Exception
@@ -65,7 +65,7 @@ namespace Prover
             }
         }
 
-        public static Node ParseString(string str)
+        public static Node ParseExpression(string str)
         {
             Parser parser = new Parser(str);
             Node result = parser.ReadNode();
@@ -74,7 +74,17 @@ namespace Prover
 
             return result;
         }
-        
+
+        public static Sequence ParseSequence(string str)
+        {
+            Parser parser = new Parser(str);
+            Sequence result = parser.ReadSequence();
+            if (parser.Peek().Type != TokenType.EndOfInput)
+                throw ExceptionAtToken("expected input to be over", parser.Peek());
+
+            return result;
+        }
+
         private static ParseException ExceptionAtToken(string message, Token token)
         {
             return new ParseException(message, token.Position);
@@ -109,6 +119,8 @@ namespace Prover
                     Tokens.Add(new Token(TokenType.OpenParenth, i));
                 else if (Input[i] == ')')
                     Tokens.Add(new Token(TokenType.CloseParenth, i));
+                else if (Input[i] == ',')
+                    Tokens.Add(new Token(TokenType.Comma, i));
                 else if (char.IsLetter(Input[i]))
                 {
                     // this does throw on input like AvB (which is arguably valid)
@@ -120,6 +132,11 @@ namespace Prover
                 else if (i < Input.Length - 1 && Input[i] == '-' && Input[i + 1] == '>')
                 {
                     Tokens.Add(new Token(TokenType.Implies, i));
+                    i++;
+                }
+                else if (i < Input.Length - 1 && Input[i] == '=' && Input[i + 1] == '>')
+                {
+                    Tokens.Add(new Token(TokenType.Yields, i));
                     i++;
                 }
                 else
@@ -212,6 +229,48 @@ namespace Prover
             }
             else
                 return unit;
+        }
+
+        private Sequence ReadSequence()
+        {
+            List<Node> premises = new List<Node>();
+            List<Node> outcomes = new List<Node>();
+
+            if (Peek().Type != TokenType.Yields)
+            {
+                premises.Add(ReadNode());
+                if (Peek().Type == TokenType.EndOfInput)
+                {
+                    // only one outcome, input is in format of a node
+                    return new Sequence(premises[0]);
+                }
+
+                while (Peek().Type == TokenType.Comma)
+                {
+                    Consume();
+                    premises.Add(ReadNode());
+                }
+            }
+
+            if (Peek().Type != TokenType.Yields)
+                throw ExceptionAtToken("expected =>", Peek());
+
+            Consume();
+
+            if (Peek().Type != TokenType.EndOfInput)
+            {
+                outcomes.Add(ReadNode());
+                while (Peek().Type == TokenType.Comma)
+                {
+                    Consume();
+                    outcomes.Add(ReadNode());
+                }
+            }
+
+            if (Peek().Type != TokenType.EndOfInput)
+                throw ExceptionAtToken("expected , or end of input", Peek());
+
+            return new Sequence(premises, outcomes);
         }
     }
 }
