@@ -1,4 +1,5 @@
-﻿using Prover.Tree;
+﻿using System.IO;
+using Prover.Tree;
 
 namespace Prover.ProofSteps
 {
@@ -15,6 +16,6 @@ namespace Prover.ProofSteps
 
         public abstract int SetOrdering(int num);
 
-        public abstract void Print();
+        public abstract void Print(TextWriter output);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using Prover.Tree;
 
 namespace Prover.ProofSteps
@@ -22,10 +22,10 @@ namespace Prover.ProofSteps
             return num + 1;
         }
 
-        public override void Print()
+        public override void Print(TextWriter output)
         {
-            Console.WriteLine($"{StepNumber, -4}{ExpressionProven}");
-            Console.WriteLine($"      modus ponens, from steps {StepA.Number} and {StepAimpliesB.Number}");
+            output.WriteLine($"{StepNumber, -4}{ExpressionProven}");
+            output.WriteLine($"      modus ponens, from steps {StepA.Number} and {StepAimpliesB.Number}");
         }
     }
 }

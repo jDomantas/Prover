@@ -1,35 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Prover.ProofSteps;
 using Prover.Tree;
 
 namespace Prover
 {
-    class Prover
+    class HilbertProver
     {
         // that symbol (tee, turnstile, yields, whatever it is called): \u22A2
         // but it doesn't get printed to the console properly
-
-        [Serializable]
-        public class ProofException : Exception
+        
+        public static void Prove(Sequence sequence, TextWriter output)
         {
-            public ProofException() { }
-            public ProofException(string message) : base(message) { }
-            public ProofException(string message, Exception inner) : base(message, inner) { }
-            protected ProofException(
-              System.Runtime.Serialization.SerializationInfo info,
-              System.Runtime.Serialization.StreamingContext context) : base(info, context)
-            { }
-        }
+            if (sequence.Premises.Count() != 0 || sequence.Outcomes.Count() != 1)
+            {
+                output.WriteLine("Hilbert prover can only prove single outcome with no premises");
+                return;
+            }
 
-        public static void Prove(Node expression)
-        {
+            var expression = sequence.Outcomes.First();
+
             const int stepLimit = 4;
             const int timeLimit = 5 * 1000;
 
-            Prover prover = new Prover(expression);
+            HilbertProver prover = new HilbertProver(expression);
             int ticks = 0;
             Stopwatch timer = Stopwatch.StartNew();
             while (!prover.IsProven(expression))
@@ -38,12 +35,12 @@ namespace Prover
                 ticks++;
                 if (ticks > stepLimit || timer.ElapsedMilliseconds > timeLimit)
                 {
-                    Console.WriteLine($"Failed to find the proof in {stepLimit} steps and {timeLimit} ms");
-                    Console.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
+                    output.WriteLine($"Failed to find the proof in {stepLimit} steps and {timeLimit} ms");
+                    output.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
                     return;
                 }
             }
-            Console.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
+            output.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
 
             prover.NodeProofs[expression].SetOrdering(1);
 
@@ -53,8 +50,8 @@ namespace Prover
 
             foreach (var step in steps)
             {
-                step.Print();
-                Console.WriteLine();
+                step.Print(output);
+                output.WriteLine();
             }
         }
 
@@ -80,7 +77,7 @@ namespace Prover
         private Dictionary<Node, HashSet<Node>> Targets { get; }
         private Node MainTarget { get; }
         
-        private Prover(Node expression)
+        private HilbertProver(Node expression)
         {
             MainTarget = expression;
 

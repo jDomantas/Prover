@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Collections.Generic;
 using Prover.Tree;
 
@@ -24,13 +24,13 @@ namespace Prover.ProofSteps
             return num + 1;
         }
 
-        public override void Print()
+        public override void Print(TextWriter output)
         {
-            Console.WriteLine($"{StepNumber, -4}{ExpressionProven}");
-            Console.WriteLine($"      from axiom {Axiom}");
-            Console.WriteLine("      where");
+            output.WriteLine($"{StepNumber, -4}{ExpressionProven}");
+            output.WriteLine($"      from axiom {Axiom}");
+            output.WriteLine("      where");
             foreach (var subst in Substitutions)
-                Console.WriteLine($"        {subst.Key} = {subst.Value}");
+                output.WriteLine($"        {subst.Key} = {subst.Value}");
         }
     }
 }
