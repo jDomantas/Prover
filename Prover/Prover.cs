@@ -26,7 +26,8 @@ namespace Prover
 
         public static void Prove(Node expression)
         {
-            const int stepLimit = 10;
+            const int stepLimit = 4;
+            const int timeLimit = 5 * 1000;
 
             Prover prover = new Prover(expression);
             int ticks = 0;
@@ -35,9 +36,10 @@ namespace Prover
             {
                 prover.ExpandTargets();
                 ticks++;
-                if (ticks > stepLimit)
+                if (ticks > stepLimit || timer.ElapsedMilliseconds > timeLimit)
                 {
-                    Console.WriteLine($"Failed to find the proof in {stepLimit} steps");
+                    Console.WriteLine($"Failed to find the proof in {stepLimit} steps and {timeLimit} ms");
+                    Console.WriteLine($"Time: {timer.ElapsedMilliseconds} ms, steps: {ticks}");
                     return;
                 }
             }

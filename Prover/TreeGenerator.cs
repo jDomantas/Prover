@@ -11,14 +11,14 @@ namespace Prover
         {
             Debug.Assert(variables.Count() > 0);
             // for now only guess temporaries with one or two variables
-            Debug.Assert(variables.Count() <= 2);
+            //Debug.Assert(variables.Count() <= 2);
 
             return Trees(3 - variables.Count(), variables);
         }
 
         private static HashSet<Node> Trees(int depth, IEnumerable<char> variables)
         {
-            if (depth == 0)
+            if (depth <= 0)
             {
                 var trees = new HashSet<Node>();
                 foreach (var v in variables)
