@@ -63,9 +63,9 @@ namespace Prover.Tree
         public override string ToString()
         {
             if (Inner is BinaryOperation)
-                return $"!({Inner})";
+                return $"~({Inner})";
             else
-                return $"!{Inner}";
+                return $"~{Inner}";
         }
     }
 }

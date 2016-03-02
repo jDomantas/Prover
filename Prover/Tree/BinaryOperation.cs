@@ -88,7 +88,7 @@ namespace Prover.Tree
                 case OP.Implies:
                     return $"{lhs} -> {rhs}";
                 case OP.Or:
-                    return $"{lhs} | {rhs}";
+                    return $"{lhs} V {rhs}";
                 default:
                     return $"{lhs} ? {rhs}";
             }
